@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :funds
   devise_for :users, controllers: { :omniauth_callbacks => "users/omniauth_callbacks" },
                      skip: [:registrations]
   authenticate :user do
