@@ -106,3 +106,5 @@ end
 group :production do
   gem 'sqreen' # an active security monitoring platform
 end
+
+gem "acts_as_tenant", "~> 0.5.0"
