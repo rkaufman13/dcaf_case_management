@@ -1,6 +1,7 @@
 # Object representing core patient information and demographic data.
 class Patient < ApplicationRecord
   acts_as_tenant :fund
+  validates_uniqueness_to_tenant :primary_phone
 
   # Concerns
   include PaperTrailable

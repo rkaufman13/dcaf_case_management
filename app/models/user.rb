@@ -2,6 +2,7 @@
 # Fields are all devise settings; most of the methods relate to call list mgmt.
 class User < ApplicationRecord
   acts_as_tenant :fund
+  validates_uniqueness_to_tenant :email
 
   # Concerns
   include PaperTrailable
@@ -12,7 +13,7 @@ class User < ApplicationRecord
           :registerable,
           :recoverable,
           :trackable,
-          :validatable,
+          # :validatable,
           :lockable,
           :timeoutable,
           :omniauthable, omniauth_providers: [:google_oauth2]
