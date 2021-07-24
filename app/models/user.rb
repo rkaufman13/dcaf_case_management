@@ -1,6 +1,8 @@
 # Object representing a case manager.
 # Fields are all devise settings; most of the methods relate to call list mgmt.
 class User < ApplicationRecord
+  acts_as_tenant :fund
+
   # Concerns
   include PaperTrailable
   include CallListable

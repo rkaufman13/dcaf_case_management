@@ -1,5 +1,7 @@
 # Object representing core patient information and demographic data.
 class Patient < ApplicationRecord
+  acts_as_tenant :fund
+
   # Concerns
   include PaperTrailable
   include Urgency
