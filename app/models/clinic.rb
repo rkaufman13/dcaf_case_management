@@ -1,7 +1,6 @@
 # Object representing a clinic that a patient is going to.
 class Clinic < ApplicationRecord
   acts_as_tenant :fund
-  validates_uniqueness_to_tenant :name
 
   # Concerns
   include PaperTrailable
@@ -21,7 +20,7 @@ class Clinic < ApplicationRecord
 
   # Validations
   validates :name, :street_address, :city, :state, :zip, presence: true
-  validates :name, uniqueness: true
+  validates_uniqueness_to_tenant :name
 
   # Methods
   def display_location

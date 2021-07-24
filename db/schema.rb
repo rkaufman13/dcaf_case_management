@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_24_213449) do
+ActiveRecord::Schema.define(version: 2021_07_24_232849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -258,7 +258,7 @@ ActiveRecord::Schema.define(version: 2021_07_24_213449) do
     t.index ["pledge_generated_by_id"], name: "index_patients_on_pledge_generated_by_id"
     t.index ["pledge_sent"], name: "index_patients_on_pledge_sent"
     t.index ["pledge_sent_by_id"], name: "index_patients_on_pledge_sent_by_id"
-    t.index ["primary_phone"], name: "index_patients_on_primary_phone", unique: true
+    t.index ["primary_phone", "fund_id"], name: "index_patients_on_primary_phone_and_fund_id", unique: true
     t.index ["urgent_flag"], name: "index_patients_on_urgent_flag"
   end
 
@@ -302,7 +302,7 @@ ActiveRecord::Schema.define(version: 2021_07_24_213449) do
     t.integer "failed_attempts", default: 0, null: false
     t.datetime "locked_at"
     t.bigint "fund_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email", "fund_id"], name: "index_users_on_email_and_fund_id", unique: true
     t.index ["fund_id"], name: "index_users_on_fund_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

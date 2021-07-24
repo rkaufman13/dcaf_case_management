@@ -2,7 +2,7 @@
 # Fields are all devise settings; most of the methods relate to call list mgmt.
 class User < ApplicationRecord
   acts_as_tenant :fund
-  validates_uniqueness_to_tenant :email
+  validates_uniqueness_to_tenant :email, allow_blank: true, if: :email_changed?
 
   # Concerns
   include PaperTrailable
@@ -27,6 +27,11 @@ class User < ApplicationRecord
     admin: 2
   }
 
+  # Constants
+  MIN_PASSWORD_LENGTH = 8
+  TIME_BEFORE_DISABLED_BY_FUND = 9.months
+  SEARCH_LIMIT = 15
+
   # Callbacks
   after_update :send_password_change_email, if: :needs_password_change_email?
   after_create :send_account_created_email, if: :persisted?
@@ -42,8 +47,19 @@ class User < ApplicationRecord
   # i18n-tasks-use t('errors.messages.password.password_strength')
   validates :password, password_strength: {use_dictionary: true}, if: :updating_password?
 
-  TIME_BEFORE_DISABLED_BY_FUND = 9.months
-  SEARCH_LIMIT = 15
+  # To accommodate tenancy, we use our own devise validations
+  # See https://github.com/heartcombo/devise/blob/master/lib/devise/models/validatable.rb
+  validates_presence_of   :email
+  # validates_uniqueness_of :email, allow_blank: true, if: :email_changed?
+  validates_format_of     :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
+  validates_presence_of     :password, if: :password_required?
+  validates_confirmation_of :password, if: :password_required?
+  validates_length_of       :password, within: MIN_PASSWORD_LENGTH..100, allow_blank: true
+
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+  # end boilerplate from validatable
 
   def updating_password?
     return !password.nil?
@@ -100,7 +116,7 @@ class User < ApplicationRecord
   private
 
   def verify_password_complexity
-    return false unless password.length >= 8 # length at least 8
+    return false unless password.length >= MIN_PASSWORD_LENGTH # length at least 8
     return false if (password =~ /[a-z]/).nil? # at least one lowercase
     return false if (password =~ /[A-Z]/).nil? # at least one uppercase
     return false if (password =~ /[0-9]/).nil? # at least one digit

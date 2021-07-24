@@ -24,6 +24,7 @@ PaperTrail.enabled = true
 lines = %w[DC VA MD]
 note_text = 'This is a note ' * 10
 additional_note_text = 'Additional note ' * 10
+password = 'AbortionsAreAHumanRight1'
 
 # Create a few test funds
 fund1 = Fund.create! name: 'Cat Fund', domain: 'catfund.org', subdomain: 'catapp'
@@ -33,13 +34,13 @@ fund2 = Fund.create! name: 'Bigger Cat Fund', domain: 'catfund.org', subdomain: 
   ActsAsTenant.with_tenant(fund) do
     # Create test users
     user = User.create! name: 'testuser (admin)', email: 'test@example.com',
-                        password: 'AbortionsAreAHumanRight1', password_confirmation: 'AbortionsAreAHumanRight1',
+                        password: password, password_confirmation: password,
                         role: :admin
     user2 = User.create! name: 'testuser2', email: 'test2@example.com',
-                         password: 'AbortionsAreAHumanRight1', password_confirmation: 'AbortionsAreAHumanRight1',
+                         password: password, password_confirmation: password,
                          role: :cm
     User.create! name: 'testuser3', email: 'dcaf.testing@gmail.com',
-                 password: 'AbortionsAreAHumanRight1', password_confirmation: 'AbortionsAreAHumanRight1',
+                 password: password, password_confirmation: password,
                  role: :cm
 
     # Default to user2 as the actor
@@ -427,5 +428,5 @@ ActsAsTenant.without_tenant do
        "Inserted #{Clinic.count} Clinic objects. \n" \
        "Inserted #{Fund.count} Fund objects. \n" \
        'User credentials are as follows: ' \
-       "EMAIL: #{user.email} PASSWORD: AbortionsAreAHumanRight1"
+       "EMAIL: #{User.where(role: :admin).first.email} PASSWORD: #{password}"
 end
