@@ -1,7 +1,7 @@
 # Object representing a patient's call list.
 class CallListEntry < ApplicationRecord
   acts_as_tenant :fund
-  validates_uniqueness_to_tenant :patient, uniqueness: { scope: :user }
+  validates_uniqueness_to_tenant :patient, scope: :user
 
   # Relationships
   belongs_to :user

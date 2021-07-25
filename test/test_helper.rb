@@ -34,8 +34,6 @@ DatabaseCleaner.clean_with :truncation
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  # setup :setup_fund
-
   before do
     DatabaseCleaner.start
     setup_tenant
@@ -46,10 +44,6 @@ class ActiveSupport::TestCase
     teardown_tenant
   end
 
-  # def setup_fund
-    # $default_fund = Fund.create! name: 'cat', domain: 'cat.org', subdomain: 'big'
-  # end
-# 
   def setup_tenant
     tenant = Fund.find_or_create_by! name: 'cat', domain: 'cat.org', subdomain: 'big'
     ActsAsTenant.test_tenant = tenant
