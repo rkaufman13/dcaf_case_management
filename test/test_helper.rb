@@ -34,8 +34,32 @@ DatabaseCleaner.clean_with :truncation
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  before { DatabaseCleaner.start }
-  after  { DatabaseCleaner.clean }
+  # setup :setup_fund
+
+  before do
+    DatabaseCleaner.start
+    setup_tenant
+  end
+
+  after do
+    DatabaseCleaner.clean
+    teardown_tenant
+  end
+
+  # def setup_fund
+    # $default_fund = Fund.create! name: 'cat', domain: 'cat.org', subdomain: 'big'
+  # end
+# 
+  def setup_tenant
+    tenant = Fund.find_or_create_by! name: 'cat', domain: 'cat.org', subdomain: 'big'
+    ActsAsTenant.test_tenant = tenant
+    ActsAsTenant.current_tenant = tenant
+  end
+
+  def teardown_tenant
+    ActsAsTenant.current_tenant = nil
+    ActsAsTenant.test_tenant = nil
+  end
 
   def create_insurance_config
     insurance_options = ['DC Medicaid', 'Other state Medicaid']
