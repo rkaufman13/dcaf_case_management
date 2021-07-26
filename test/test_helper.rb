@@ -40,14 +40,14 @@ class ActiveSupport::TestCase
   end
 
   after do
-    DatabaseCleaner.clean
     teardown_tenant
+    DatabaseCleaner.clean
   end
 
   def setup_tenant
-    tenant = Fund.find_or_create_by! name: 'cat', domain: 'cat.org', subdomain: 'big'
-    ActsAsTenant.test_tenant = tenant
+    tenant = create :fund
     ActsAsTenant.current_tenant = tenant
+    ActsAsTenant.test_tenant = tenant
   end
 
   def teardown_tenant
@@ -127,6 +127,4 @@ class ActionDispatch::IntegrationTest
   OmniAuth.config.test_mode = true
 
   before { Capybara.reset_sessions! }
-
-  # for controllers
 end

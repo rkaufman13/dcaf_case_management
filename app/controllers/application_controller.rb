@@ -1,7 +1,7 @@
 # Sets a few devise configs and security measures
 class ApplicationController < ActionController::Base
   # Scope everything to a particular fund at request time.
-  set_current_tenant_by_subdomain_or_domain(:fund, :subdomain, :domain)
+  set_current_tenant_by_subdomain_or_domain(:fund, :subdomain)
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -70,6 +70,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_raven_context
+    # binding.pry
     Raven.user_context(id: current_user&.id)
     Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
