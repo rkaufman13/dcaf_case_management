@@ -2,7 +2,6 @@
 # Fields are all devise settings; most of the methods relate to call list mgmt.
 class User < ApplicationRecord
   acts_as_tenant :fund
-  validates_uniqueness_to_tenant :email, allow_blank: true, if: :email_changed?
 
   # Concerns
   include PaperTrailable
@@ -40,8 +39,10 @@ class User < ApplicationRecord
   has_many :call_list_entries
 
   # Validations
+  validates_uniqueness_to_tenant :email, allow_blank: true, if: :email_changed?
+
   # email presence validated through Devise
-  validates :name, :role, presence: true
+  validates :name, :role, :email, presence: true
   validates_format_of :email, with: Devise::email_regexp
   validate :secure_password, if: :updating_password?
   # i18n-tasks-use t('errors.messages.password.password_strength')
@@ -49,8 +50,6 @@ class User < ApplicationRecord
 
   # To accommodate tenancy, we use our own devise validations
   # See https://github.com/heartcombo/devise/blob/master/lib/devise/models/validatable.rb
-  validates_presence_of   :email
-  # validates_uniqueness_of :email, allow_blank: true, if: :email_changed?
   validates_format_of     :email, with: Devise::email_regexp, allow_blank: true, if: :email_changed?
   validates_presence_of     :password, if: :password_required?
   validates_confirmation_of :password, if: :password_required?
